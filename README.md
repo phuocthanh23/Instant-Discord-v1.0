@@ -64,6 +64,7 @@ Search for **Instant Discord** on the Chrome Web Store and click **Add to Chrome
 3. Paste your **webhook URL** and give the channel a name
 4. Add more channels with **+ Add Channel** if needed
 5. Click **Save**
+<img width="471" height="664" alt="image" src="https://github.com/user-attachments/assets/444b3e8b-f9cd-497e-91f8-d17f83f04926" />
 
 ### Step 3 — Share
 1. Go to any YouTube video or Short
@@ -71,6 +72,7 @@ Search for **Instant Discord** on the Chrome Web Store and click **Add to Chrome
 3. Click it to open the compose panel
 4. Optionally add a message, select a channel, or set a start timestamp
 5. Hit **Send It!**
+<img width="517" height="703" alt="image" src="https://github.com/user-attachments/assets/8591c390-8006-4047-ab9e-8b529546fdac" />
 
 ---
 
