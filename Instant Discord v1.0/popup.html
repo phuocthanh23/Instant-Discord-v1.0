@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instant Discord</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      background: transparent !important;
+      margin: 0; padding: 0;
+    }
+
+    body {
+      width: 300px;
+      margin: 0; padding: 0;
+      background: #1e2022;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #e3e5e8;
+      border: 1px solid #333030;
+    }
+
+    /* popup-root is just a layout wrapper now — radius lives on body */
+    .popup-root { width: 100%; }
+
+    /* ── Header ── */
+    .header {
+      background: #313339;
+      padding: 18px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo {
+      width: 40px; height: 40px;
+      flex-shrink: 0;
+      display: flex;
+    }
+    .header-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .header-title {
+      display: flex; align-items: baseline; gap: 6px;
+    }
+    .header-title h1 {
+      font-size: 16px; font-weight: 600; font-style: italic; color: #fff;
+    }
+    .header-title .version {
+      font-size: 11px; font-weight: 400; color: #abacb9;
+    }
+    .header-sub { font-size: 11px; color: #abacb9; white-space: nowrap; }
+
+    /* ── Content ── */
+    .content { padding: 16px; padding-bottom: 12px; display: flex; flex-direction: column; }
+
+    /* ── Section ── */
+    .section { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+    .section-label {
+      font-size: 10px; font-weight: 600; color: #b2b3c2;
+      text-transform: uppercase; letter-spacing: 0.6px;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .required { color: #ff4d50; }
+
+    /* ── Text input ── */
+    .text-input {
+      width: 100%;
+      background: #1e2022;
+      border: 1px solid #313339;
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 12px; font-weight: 500;
+      color: #e3e5e8;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .text-input::placeholder { color: #7e838a; font-weight: 500; }
+    .text-input:focus { border-color: #5865f2; }
+    input.text-input { height: 32px; }
+
+
+
+    /* ── Channel card ── */
+    .channel-card {
+      background: #2b2d31;
+      border: 1px solid #3a3d44;
+      border-radius: 8px;
+      padding: 8px;
+      display: flex; flex-direction: column; gap: 4px;
+      margin-bottom: 7px;
+    }
+    .channel-card:last-child { margin-bottom: 0; }
+    .channel-row1 { display: flex; gap: 4px; align-items: center; }
+    .channel-row1 input { flex: 1; min-width: 0; }
+
+    .delete-btn {
+      width: 30px; height: 32px; flex-shrink: 0;
+      background: #1e2022; border: 1px solid #313339;
+      border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #7e838a; transition: color 0.15s, border-color 0.15s;
+    }
+    .delete-btn:hover { color: #ff4d50; border-color: #ff4d50; }
+
+    /* ── Add Channel button ── */
+    .add-btn {
+      margin-top: 4px;
+      width: 100%; padding: 8px;
+      background: #272b2e;
+      border: 1px dashed #444751;
+      border-radius: 6px;
+      color: #95999e; font-size: 12px; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      transition: all 0.15s;
+    }
+    .add-btn:hover { background: #1b1d34; border-color: #5865f2; color: #5865f2; }
+
+    /* ── Save button ── */
+    .save-btn {
+      width: 100%; padding: 8px;
+      background: #5865f2; border: none;
+      border-radius: 6px; color: #fff;
+      font-size: 12px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .save-btn:hover { background: #4752c4; }
+
+    /* ── Status ── */
+    .save-status {
+      font-size: 11px; text-align: center;
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.2s ease, padding 0.2s ease;
+      color: #7e838a;
+    }
+    .save-status.visible {
+      max-height: 30px;
+      padding-top: 2px;
+    }
+    .save-status.ok  { color: #23a55a; }
+    .save-status.err { color: #ff4d50; }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 1px solid #333030;
+      padding: 12px 36px;
+      text-align: center;
+      font-size: 11px; color: #828496;
+    }
+  </style>
+</head>
+<body>
+<div class="popup-root">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="#5865F2"/><path d="M27.9384 17.7214C27.8851 17.6056 27.7998 17.5075 27.6925 17.4388C27.5852 17.37 27.4605 17.3334 27.333 17.3334H20.1877L21.313 12.828C21.3487 12.6826 21.3344 12.5294 21.2724 12.3931C21.2105 12.2569 21.1044 12.1454 20.9714 12.0767C20.8383 12.008 20.686 11.9861 20.539 12.0146C20.392 12.043 20.2589 12.1201 20.161 12.2334L12.161 21.5667C12.0783 21.6635 12.0249 21.7819 12.0074 21.908C11.9898 22.0341 12.0087 22.1626 12.0618 22.2783C12.115 22.394 12.2002 22.4921 12.3073 22.5609C12.4144 22.6298 12.539 22.6665 12.6664 22.6667H19.8117L18.6864 27.172C18.6501 27.3177 18.6641 27.4713 18.7261 27.608C18.788 27.7447 18.8943 27.8566 19.0277 27.9254C19.1219 27.9747 19.2267 28.0004 19.333 28C19.4291 27.9998 19.524 27.9789 19.6112 27.9386C19.6984 27.8984 19.7759 27.8397 19.8384 27.7667L27.8384 18.4334C27.9213 18.3367 27.9748 18.2182 27.9926 18.092C28.0103 17.9658 27.9915 17.8372 27.9384 17.7214Z" fill="white"/></svg>
+    </div>
+    <div class="header-text">
+      <div class="header-title">
+        <h1>Instant Discord</h1>
+        <span class="version">v1.0</span>
+      </div>
+      <span class="header-sub">Instantly share Youtube to your bros.</span>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Your Name -->
+    <div class="section">
+      <div class="section-label">Your name <span class="required">*</span></div>
+      <input type="text" class="text-input" id="sender-name-input" placeholder="Your name" />
+    </div>
+
+    <!-- Discord Channels -->
+    <div class="section">
+      <div class="section-label">Discord Channels</div>
+      <div id="webhook-list"></div>
+      <button class="add-btn" id="add-webhook">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+          <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Add Channel
+      </button>
+    </div>
+
+    <button class="save-btn" id="save-btn">Save</button>
+    <div class="save-status" id="save-status"></div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">Hover over the Youtube player to share</div>
+
+  <script src="popup.js"></script>
+</div>
+</body>
+</html>
